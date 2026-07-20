@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Area Riservata - BBONA Pizzeria Romana</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    /* ── Admin drag & drop collapsible ── */
+    .cat-block {
+      background: var(--avorio);
+      border: 1px solid rgba(27,58,45,0.12);
+      border-radius: 6px;
+      margin-bottom: 0.6rem;
+      transition: box-shadow 0.2s;
+      cursor: default;
+    }
+    .cat-block.dragging {
+      opacity: 0.4;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+    }
+    .cat-block.drag-over {
+      border-color: var(--verde-foglia);
+      box-shadow: 0 0 0 2px rgba(45,106,79,0.25);
+    }
+    .cat-header {
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+      padding: 1rem 1.2rem;
+      background: var(--crema);
+      border-radius: 6px 6px 0 0;
+      cursor: grab;
+      user-select: none;
+    }
+    .cat-block.collapsed .cat-header {
+      border-radius: 6px;
+    }
+    .cat-header:active { cursor: grabbing; }
+    .cat-drag-handle {
+      color: var(--grigio);
+      font-size: 1.1rem;
+      flex-shrink: 0;
+      cursor: grab;
+      opacity: 0.5;
+    }
+    .cat-title-input {
+      font-family: var(--ff-display);
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: var(--verde-bosco);
+      border: none;
+      background: transparent;
+      flex: 1;
+      padding: 0.2rem 0.4rem;
+      border-bottom: 1px dashed transparent;
+      cursor: text;
+      min-width: 0;
+    }
+    .cat-title-input:focus {
+      outline: none;
+      border-bottom-color: var(--terracotta);
+    }
+    .cat-toggle {
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      font-size: 0.75rem;
+      color: var(--grigio);
+      padding: 0.3rem 0.5rem;
+      border-radius: 4px;
+      transition: background 0.2s, transform 0.25s;
+      flex-shrink: 0;
+    }
+    .cat-toggle:hover { background: rgba(27,58,45,0.08); }
+    .cat-block.collapsed .cat-toggle { transform: rotate(-90deg); }
+    .cat-remove-btn {
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      color: var(--grigio);
+      padding: 0.3rem 0.5rem;
+      flex-shrink: 0;
+      transition: color 0.2s;
+    }
+    .cat-remove-btn:hover { color: #B23A3A; }
+    .cat-count {
+      font-size: 0.68rem;
+      color: var(--grigio);
+      background: rgba(27,58,45,0.08);
+      padding: 0.15rem 0.5rem;
+      border-radius: 100px;
+      flex-shrink: 0;
+    }
+    .cat-body {
+      padding: 0.8rem 1.2rem 1rem;
+      overflow: hidden;
+    }
+    .cat-block.collapsed .cat-body {
+      display: none;
+    }
+    /* Items */
+    .admin-items { display: flex; flex-direction: column; gap: 0.6rem; }
+    .admin-item {
+      display: grid;
+      grid-template-columns: 2fr 90px 90px 2fr auto;
+      gap: 0.6rem;
+      align-items: center;
+      padding: 0.65rem 0.8rem;
+      background: var(--crema);
+      border-radius: 4px;
+      border: 1px solid rgba(27,58,45,0.07);
+    }
+    .admin-item input, .admin-item select {
+      width: 100%;
+      padding: 0.45rem 0.6rem;
+      border: 1px solid rgba(27,58,45,0.15);
+      border-radius: 3px;
+      font-family: var(--ff-body);
+      font-size: 0.83rem;
+      background: var(--bianco);
+    }
+    .admin-item input:focus, .admin-item select:focus {
+      outline: none;
+      border-color: var(--verde-foglia);
+    }
+    .admin-item-remove {
+      background: transparent;
+      border: none;
+      color: var(--grigio);
+      cursor: pointer;
+      font-size: 1rem;
+      padding: 0.3rem;
+      transition: color 0.2s;
+      text-align: center;
+    }
+    .admin-item-remove:hover { color: #B23A3A; }
+    .admin-add-item-btn {
+      margin-top: 0.5rem;
+      background: transparent;
+      border: 1px dashed rgba(27,58,45,0.25);
+      border-radius: 4px;
+      padding: 0.5rem 1rem;
+      color: var(--verde-foglia);
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      width: 100%;
+    }
+    .admin-add-item-btn:hover {
+      border-color: var(--verde-foglia);
+      background: rgba(45,106,79,0.05);
+    }
+    /* Drag ghost */
+    .drag-ghost {
+      position: fixed;
+      pointer-events: none;
+      z-index: 9999;
+      opacity: 0.85;
+      transform: rotate(1.5deg);
+      background: var(--crema);
+      border: 1.5px solid var(--verde-foglia);
+      border-radius: 6px;
+      padding: 0.9rem 1.4rem;
+      font-family: var(--ff-display);
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--verde-bosco);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.2);
+      white-space: nowrap;
+      max-width: 260px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    @media (max-width: 700px) {
+      .admin-item { grid-template-columns: 1fr 80px; }
+      .admin-item input:nth-child(3),
+      .admin-item select,
+      .admin-item input:nth-child(4) { display: none; }
+      .admin-item-remove { grid-column: 2; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══ LOGIN ═══ -->
+<div class="admin-login" id="login-screen">
+  <div class="admin-login__box">
+    <div class="admin-login__logo">BBONA</div>
+    <div class="admin-login__sub">Area Riservata</div>
+    <div class="admin-field">
+      <label for="login-user">Email</label>
+      <input type="email" id="login-user" autocomplete="username" required />
+    </div>
+    <p class="admin-login__hint">Primo accesso: admin@bbona.local · Bbona2026!</p>
+    <div class="admin-field">
+      <label for="login-pass">Password</label>
+      <input type="password" id="login-pass" autocomplete="current-password" required />
+    </div>
+    <button class="btn btn--primary admin-login__btn" id="login-btn">Accedi</button>
+    <p class="admin-login__error" id="login-error">Credenziali non corrette. Riprova.</p>
+    <p style="margin-top:1.5rem;"><a href="index.html" style="font-size:0.78rem;color:var(--verde-foglia);">← Torna al sito</a></p>
+  </div>
+</div>
+
+<!-- ═══ DASHBOARD ═══ -->
+<div id="dashboard" style="display:none;">
+  <div class="admin-bar">
+    <div class="admin-bar__title">BBONA · Gestione Menu</div>
+    <div class="admin-bar__actions">
+      <span id="save-status" style="font-size:0.78rem;opacity:0.6;"></span>
+      <button class="admin-btn admin-btn--danger" id="reset-btn">Ripristina default</button>
+      <a href="menu.html" target="_blank" class="admin-btn">Vedi menu</a>
+      <button class="admin-btn admin-btn--primary" id="save-btn">Salva</button>
+      <button class="admin-btn" id="logout-btn">Esci</button>
+    </div>
+  </div>
+
+  <div class="admin-wrap">
+    <p style="color:var(--grigio);font-size:0.88rem;margin-bottom:1.5rem;max-width:640px;">
+      Trascina le categorie per riordinarle. Espandi una categoria per modificare i piatti.
+    </p>
+
+    <!-- Aggiungi categoria -->
+    <div class="admin-add-cat" style="margin-bottom:1.5rem;">
+      <div class="admin-field" style="margin-bottom:0;flex:1;">
+        <label for="new-cat-name">Nuova categoria</label>
+        <input type="text" id="new-cat-name" placeholder="Es. Pizze Speciali" />
+      </div>
+      <button class="btn btn--primary" id="add-cat-btn">+ Aggiungi</button>
+    </div>
+
+    <!-- Contenitore drag & drop -->
+    <div id="categories-container"></div>
+  </div>
+</div>
+
+<div class="admin-toast" id="toast"></div>
+<!-- Ghost element per drag visivo -->
+<div class="drag-ghost" id="drag-ghost" style="display:none;"></div>
+
+<script type="module">
+import { BBONA_DEFAULT_MENU } from "./js/default-menu.js?v=20260720b";
+
+const loginScreen = document.getElementById('login-screen');
+const dashboard   = document.getElementById('dashboard');
+const loginError  = document.getElementById('login-error');
+const toast       = document.getElementById('toast');
+const saveStatus  = document.getElementById('save-status');
+const container   = document.getElementById('categories-container');
+const ghost       = document.getElementById('drag-ghost');
+
+let menuData = [];
+let dragSrcIndex = null;
+let dragOverIndex = null;
+
+// ─── Auth ───
+async function showAuthState() {
+  if (sessionStorage.getItem('bbona_admin') === '1') {
+    loginScreen.style.display = 'none';
+    dashboard.style.display   = 'block';
+    await loadMenu();
+  } else {
+    loginScreen.style.display = 'flex';
+    dashboard.style.display   = 'none';
+  }
+}
+showAuthState();
+
+document.getElementById('login-btn').addEventListener('click', async () => {
+  const email = document.getElementById('login-user').value.trim();
+  const pass  = document.getElementById('login-pass').value;
+  try {
+    if (email !== 'admin@bbona.local' || pass !== 'Bbona2026!') throw new Error('invalid');
+    sessionStorage.setItem('bbona_admin', '1');
+    loginError.classList.remove('show');
+    showAuthState();
+  } catch {
+    loginError.classList.add('show');
+  }
+});
+
+document.getElementById('logout-btn').addEventListener('click', () => {
+  sessionStorage.removeItem('bbona_admin');
+  location.reload();
+});
+
+// ─── Firestore ───
+async function loadMenu() {
+  try {
+    menuData = JSON.parse(localStorage.getItem('bbona_menu') || 'null') || JSON.parse(JSON.stringify(BBONA_DEFAULT_MENU));
+    render();
+    markSaved();
+  } catch(e) { showToast('Errore: ' + e.message); }
+}
+
+async function saveToFirestore() {
+  localStorage.setItem('bbona_menu', JSON.stringify(menuData));
+}
+
+document.getElementById('save-btn').addEventListener('click', async () => {
+  try {
+    await saveToFirestore();
+    markSaved();
+    showToast('Menu salvato su questo browser.');
+  } catch(e) { showToast('Errore: ' + e.message); }
+});
+
+document.getElementById('reset-btn').addEventListener('click', async () => {
+  if (!confirm('Ripristinare il menu ai valori di default?')) return;
+  await setupInitialMenu();
+  showToast('Menu ripristinato.');
+});
+
+document.getElementById('add-cat-btn').addEventListener('click', () => {
+  const input = document.getElementById('new-cat-name');
+  const name  = input.value.trim();
+  if (!name) return;
+  const id = name.toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+    .replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'') || ('cat-' + Date.now());
+  menuData.push({ id, title: name, title_en: name, items: [] });
+  input.value = '';
+  markUnsaved();
+  render();
+});
+
+// ─── Render principale ───
+// Stato collapsed per categoria (persiste durante la sessione)
+const collapsedState = {};
+
+function render() {
+  container.innerHTML = '';
+  menuData.forEach((cat, ci) => {
+    const isCollapsed = collapsedState[cat.id] !== false; // default collassato
+    const block = document.createElement('div');
+    block.className = 'cat-block' + (isCollapsed ? ' collapsed' : '');
+    block.dataset.index = ci;
+    block.draggable = true;
+
+    // ── Header ──
+    const header = document.createElement('div');
+    header.className = 'cat-header';
+    header.innerHTML = `
+      <span class="cat-drag-handle" title="Trascina per riordinare">⠿</span>
+      <input class="cat-title-input" type="text" value="${esc(cat.title)}" data-ci="${ci}" data-field="title" />
+      <input class="cat-title-input cat-title-en-input" type="text" value="${esc(cat.title_en||'')}" data-ci="${ci}" data-field="title_en" placeholder="Category (EN)" style="border-color:rgba(168,116,74,0.35);" />
+      <span class="cat-count">${cat.items.length} piatti</span>
+      <button class="cat-toggle" title="${isCollapsed ? 'Espandi' : 'Comprimi'}">▼</button>
+      <button class="cat-remove-btn" data-ci="${ci}">Elimina</button>
+    `;
+    block.appendChild(header);
+
+    // ── Body ──
+    const body = document.createElement('div');
+    body.className = 'cat-body';
+
+    const itemsWrap = document.createElement('div');
+    itemsWrap.className = 'admin-items';
+    cat.items.forEach((item, ii) => itemsWrap.appendChild(buildItemRow(ci, ii, item)));
+
+    const addBtn = document.createElement('button');
+    addBtn.className = 'admin-add-item-btn';
+    addBtn.textContent = '+ Aggiungi piatto';
+    addBtn.addEventListener('click', () => {
+      menuData[ci].items.push({ name:'', price:'', desc:'', tag:'' });
+      collapsedState[cat.id] = false; // tieni espanso quando aggiungi
+      markUnsaved(); render();
+    });
+
+    itemsWrap.appendChild(addBtn);
+    body.appendChild(itemsWrap);
+    block.appendChild(body);
+    container.appendChild(block);
+
+    // ── Listeners header ──
+    // Toggle collassa/espandi - clic sul bottone o sull'header ma NON sull'input
+    header.querySelector('.cat-toggle').addEventListener('click', e => {
+      e.stopPropagation();
+      collapsedState[cat.id] = !block.classList.contains('collapsed') ? false : false;
+      collapsedState[cat.id] = block.classList.contains('collapsed');
+      block.classList.toggle('collapsed');
+      e.currentTarget.title = block.classList.contains('collapsed') ? 'Espandi' : 'Comprimi';
+    });
+
+    // Clic sull'header stesso (non sui bottoni/input) => toggle
+    header.addEventListener('click', e => {
+      if (e.target === header || e.target.classList.contains('cat-drag-handle')) {
+        collapsedState[cat.id] = !block.classList.contains('collapsed') ? false : false;
+        collapsedState[cat.id] = block.classList.contains('collapsed');
+        block.classList.toggle('collapsed');
+        header.querySelector('.cat-toggle').title = block.classList.contains('collapsed') ? 'Espandi' : 'Comprimi';
+      }
+    });
+
+    // Input titoli categoria
+    header.querySelectorAll('.cat-title-input').forEach(input => {
+      input.addEventListener('click', e => e.stopPropagation());
+      input.addEventListener('input', e => {
+        menuData[e.target.dataset.ci][e.target.dataset.field] = e.target.value;
+        markUnsaved();
+      });
+    });
+
+    // Elimina categoria
+    header.querySelector('.cat-remove-btn').addEventListener('click', e => {
+      e.stopPropagation();
+      if (!confirm('Eliminare questa categoria e tutti i suoi piatti?')) return;
+      menuData.splice(e.target.dataset.ci, 1);
+      markUnsaved(); render();
+    });
+
+    // ── Drag & Drop ──
+    block.addEventListener('dragstart', e => {
+      dragSrcIndex = ci;
+      block.classList.add('dragging');
+      ghost.textContent = cat.title;
+      ghost.style.display = 'block';
+      e.dataTransfer.effectAllowed = 'move';
+      e.dataTransfer.setDragImage(new Image(), 0, 0); // nasconde ghost nativo
+    });
+
+    block.addEventListener('drag', e => {
+      if (e.clientX === 0 && e.clientY === 0) return;
+      ghost.style.left = (e.clientX + 14) + 'px';
+      ghost.style.top  = (e.clientY - 18) + 'px';
+    });
+
+    block.addEventListener('dragend', () => {
+      block.classList.remove('dragging');
+      ghost.style.display = 'none';
+      container.querySelectorAll('.cat-block').forEach(b => b.classList.remove('drag-over'));
+      if (dragSrcIndex !== null && dragOverIndex !== null && dragSrcIndex !== dragOverIndex) {
+        const moved = menuData.splice(dragSrcIndex, 1)[0];
+        menuData.splice(dragOverIndex, 0, moved);
+        markUnsaved();
+      }
+      dragSrcIndex = null;
+      dragOverIndex = null;
+      render();
+    });
+
+    block.addEventListener('dragover', e => {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'move';
+      container.querySelectorAll('.cat-block').forEach(b => b.classList.remove('drag-over'));
+      block.classList.add('drag-over');
+      dragOverIndex = ci;
+    });
+
+    block.addEventListener('dragleave', () => {
+      block.classList.remove('drag-over');
+    });
+
+    block.addEventListener('drop', e => {
+      e.preventDefault();
+      block.classList.remove('drag-over');
+    });
+
+    // Touch drag (mobile) - semplice: tieni premuto 400ms sull'handle
+    let touchTimer = null;
+    let touchDragging = false;
+    let touchStartY = 0;
+
+    header.querySelector('.cat-drag-handle').addEventListener('touchstart', e => {
+      touchStartY = e.touches[0].clientY;
+      touchTimer = setTimeout(() => {
+        touchDragging = true;
+        dragSrcIndex = ci;
+        ghost.textContent = cat.title;
+        ghost.style.display = 'block';
+        ghost.style.left = (e.touches[0].clientX + 14) + 'px';
+        ghost.style.top  = (e.touches[0].clientY - 18) + 'px';
+        block.classList.add('dragging');
+      }, 400);
+    }, { passive: true });
+
+    header.querySelector('.cat-drag-handle').addEventListener('touchmove', e => {
+      if (!touchDragging) { clearTimeout(touchTimer); return; }
+      e.preventDefault();
+      const touch = e.touches[0];
+      ghost.style.left = (touch.clientX + 14) + 'px';
+      ghost.style.top  = (touch.clientY - 18) + 'px';
+      // Trova elemento sotto il touch
+      ghost.style.display = 'none';
+      const el = document.elementFromPoint(touch.clientX, touch.clientY);
+      ghost.style.display = 'block';
+      const targetBlock = el && el.closest('.cat-block');
+      container.querySelectorAll('.cat-block').forEach(b => b.classList.remove('drag-over'));
+      if (targetBlock) {
+        targetBlock.classList.add('drag-over');
+        dragOverIndex = parseInt(targetBlock.dataset.index);
+      }
+    }, { passive: false });
+
+    header.querySelector('.cat-drag-handle').addEventListener('touchend', () => {
+      clearTimeout(touchTimer);
+      if (touchDragging) {
+        block.classList.remove('dragging');
+        ghost.style.display = 'none';
+        container.querySelectorAll('.cat-block').forEach(b => b.classList.remove('drag-over'));
+        if (dragSrcIndex !== null && dragOverIndex !== null && dragSrcIndex !== dragOverIndex) {
+          const moved = menuData.splice(dragSrcIndex, 1)[0];
+          menuData.splice(dragOverIndex, 0, moved);
+          markUnsaved();
+        }
+        dragSrcIndex = null;
+        dragOverIndex = null;
+        touchDragging = false;
+        render();
+      }
+    });
+  });
+}
+
+// ─── Riga singolo piatto ───
+function buildItemRow(ci, ii, item) {
+  const row = document.createElement('div');
+  row.className = 'admin-item';
+  row.style.gridTemplateColumns = '2fr 80px 90px 2fr 2fr 2fr auto';
+  row.innerHTML = `
+    <input type="text" placeholder="Nome (IT)" value="${esc(item.name)}" data-field="name" />
+    <input type="text" placeholder="Prezzo" value="${esc(item.price)}" data-field="price" />
+    <select data-field="tag">
+      ${['','Consigliata','Consigliato','Consigliati','Signature','Stagionale','Piccante','Vegano','Vegetariano','Da condividere']
+        .map(t=>`<option value="${t}" ${item.tag===t?'selected':''}>${t||'Nessun tag'}</option>`).join('')}
+    </select>
+    <input type="text" placeholder="Descrizione (IT)" value="${esc(item.desc)}" data-field="desc" />
+    <input type="text" placeholder="Name (EN)" value="${esc(item.name_en||'')}" data-field="name_en" style="border-color:rgba(168,116,74,0.4);" />
+    <input type="text" placeholder="Description (EN)" value="${esc(item.desc_en||'')}" data-field="desc_en" style="border-color:rgba(168,116,74,0.4);" />
+    <button class="admin-item-remove" title="Elimina piatto">✕</button>
+  `;
+  row.querySelectorAll('input,select').forEach(f => {
+    f.addEventListener('input', e => {
+      menuData[ci].items[ii][e.target.dataset.field] = e.target.value;
+      markUnsaved();
+    });
+  });
+  row.querySelector('.admin-item-remove').addEventListener('click', () => {
+    menuData[ci].items.splice(ii, 1);
+    markUnsaved(); render();
+  });
+  return row;
+}
+
+// ─── Menu default ───
+const DEFAULT_MENU = BBONA_DEFAULT_MENU;
+
+async function setupInitialMenu() {
+  menuData = JSON.parse(JSON.stringify(DEFAULT_MENU));
+  await saveToFirestore();
+  render();
+  showToast('Menu iniziale caricato su Firebase.');
+}
+
+// ─── Utils ───
+function esc(s){ const d=document.createElement('div'); d.textContent=s||''; return d.innerHTML; }
+function showToast(msg){ toast.textContent=msg; toast.classList.add('show'); setTimeout(()=>toast.classList.remove('show'),2400); }
+function markUnsaved(){ saveStatus.textContent='Non salvato'; saveStatus.style.color='#E0A85A'; }
+function markSaved(){ saveStatus.textContent='Salvato'; saveStatus.style.color='rgba(245,240,232,0.6)'; }
+</script>
+</body>
+</html>
