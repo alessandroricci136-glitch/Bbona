@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Menu - BBONA Pizzeria Romana | Pizzeria Forno a Legna</title>
+  <meta name="description" content="Scopri il menu di BBONA Pizzeria Romana: pizze napoletane a legna, antipasti, arrosticini abruzzesi, fritti e dolci. Centro storico di L’Aquila." />
+  <link rel="canonical" href="https://bbona-pizzeria-romana.vercel.app/menu.html" />
+  <meta property="og:title"       content="Menu - BBONA Pizzeria Romana" />
+  <meta property="og:description" content="Pizze a legna, arrosticini e cucina creativa al centro di L’Aquila." />
+  <meta property="og:image"       content="https://bbona-pizzeria-romana.vercel.app/assets/menu-hero-bbona.png" />
+  <meta property="og:image:secure_url" content="https://bbona-pizzeria-romana.vercel.app/assets/menu-hero-bbona.png" />
+  <meta property="og:image:type"  content="image/jpeg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:url"         content="https://bbona-pizzeria-romana.vercel.app/menu.html" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="preconnect" href="https://www.gstatic.com" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Sans:wght@300;400;500;600&display=swap" />
+  <link rel="stylesheet" href="css/style.css?v=20260720d" />
+</head>
+<body class="menu-page">
+
+<nav class="navbar scrolled" id="navbar">
+  <a href="index.html" class="navbar__logo" aria-label="BBONA Pizzeria Romana - Home">
+    <img src="assets/bbona-logo.jpg" alt="BBONA Pizzeria Romana" class="navbar__logo-img" />
+  </a>
+  <ul class="navbar__links" id="nav-links">
+    <button class="navbar__close" id="nav-close" aria-label="Chiudi menu">&#x2715;</button>
+    <li><a href="index.html" data-it="Home" data-en="Home">Home</a></li>
+    <li><a href="menu.html" data-it="Menu" data-en="Menu">Menu</a></li>
+    <li><a href="contatti.html" data-it="Contatti" data-en="Contact">Contatti</a></li>
+    <li><a href="contatti.html" class="navbar__cta" data-it="Prenota" data-en="Book">Prenota</a></li>
+  </ul>
+  <div class="lang-toggle" aria-label="Scegli lingua">
+    <button data-lang="it" class="active">IT</button>
+    <button data-lang="en">EN</button>
+  </div>
+  <button class="navbar__burger" id="burger" type="button" aria-label="Apri menu" aria-controls="nav-links" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<section class="menu-hero" id="menu-top">
+  <svg class="menu-hero__bg-svg" viewBox="0 0 1400 500" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+    <g fill="none" stroke="#4A8C6F" stroke-width="1.5">
+      <path d="M-50 450 Q 150 250 350 100 Q 200 250 80 430Z" opacity="0.6"/>
+      <path d="M1200 0 Q 1050 200 1100 420 Q 1130 200 1250 30Z" opacity="0.5"/>
+    </g>
+  </svg>
+  <p class="section__label" style="position:relative;z-index:1;" data-it="Tradizione & Creativita" data-en="Tradition & Creativity">Tradizione & Creativita</p>
+  <h1 class="menu-hero__title" data-it="Il Menu" data-en="The Menu">Il Menu</h1>
+  <p class="menu-hero__sub" data-it="Pizza romana · Focacce · Antipasti · Dolci" data-en="Roman pizza · Focaccias · Starters · Desserts">Pizza romana · Focacce · Antipasti · Dolci</p>
+</section>
+
+<!-- Filtri - generati via JS -->
+<div class="menu-filter">
+  <div class="menu-filter__inner" id="filter-bar">
+    <button class="filter-btn active" data-filter="tutti" data-it="Tutti" data-en="All">Tutti</button>
+  </div>
+</div>
+
+<!-- Stato caricamento -->
+<div id="menu-loading" style="text-align:center;padding:4rem 2rem;color:var(--grigio);font-size:0.95rem;">
+  <span data-it="Caricamento menu..." data-en="Loading menu...">Caricamento menu...</span>
+</div>
+
+<!-- Menu grid - popolato via JS -->
+<div class="menu-grid" id="menu-grid" style="display:none;"></div>
+
+<p id="menu-note" style="display:none;text-align:center;color:var(--grigio);font-size:0.82rem;margin:-3rem auto 4rem;max-width:var(--max-w);padding:0 2rem;">
+  <span data-it="Coperto 2,50 euro a persona · I prezzi possono subire variazioni stagionali · Su richiesta veganizziamo qualsiasi pizza" data-en="Cover charge 2.50 euros per person · Prices may vary seasonally · On request we can make any pizza vegan">Coperto 2,50 euro a persona · I prezzi possono subire variazioni stagionali · Su richiesta veganizziamo qualsiasi pizza</span>
+</p>
+
+<!-- ═══ DELIVERY ═══ -->
+<section class="delivery-section reveal">
+  <div class="delivery-inner">
+    <p class="section__label" style="text-align:center;" data-it="Ordina da casa" data-en="Order from Home">Ordina da casa</p>
+    <h2 class="delivery-title"><span data-it="Vuoi che te lo portiamo" data-en="Want us to bring it">Vuoi che te lo portiamo</span><br><em data-it="a casa?" data-en="to your door?">a casa?</em></h2>
+    <p class="delivery-sub" data-it="Ordina su una delle piattaforme di delivery e ricevi il meglio di BBONA direttamente a domicilio." data-en="Order through one of the delivery platforms and enjoy the best of BBONA at home.">Ordina su una delle piattaforme di delivery e ricevi il meglio di BBONA direttamente a domicilio.</p>
+    <div class="delivery-logos">
+      <a href="https://glovoapp.com/it/it/laquila/stores/bbona-pizzeria-romana-qaq" target="_blank" rel="noopener" class="delivery-logo-link" aria-label="Ordina su Glovo">
+        <svg class="delivery-logo-svg" viewBox="0 0 120 40" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="20" cy="20" r="16" fill="#FFC244"/>
+          <text x="20" y="25" text-anchor="middle" font-family="Arial Black,sans-serif" font-size="13" font-weight="900" fill="#1A1A1A">g</text>
+          <text x="44" y="26" font-family="Arial Black,sans-serif" font-size="15" font-weight="900" fill="#1A1A1A">glovo</text>
+        </svg>
+      </a>
+      <a href="https://deliveroo.it/it/menu/laquila/laquila/bbona-pizzeria-romana" target="_blank" rel="noopener" class="delivery-logo-link" aria-label="Ordina su Deliveroo">
+        <svg class="delivery-logo-svg" viewBox="0 0 140 40" xmlns="http://www.w3.org/2000/svg">
+          <rect x="2" y="4" width="32" height="32" rx="8" fill="#00CCBC"/>
+          <text x="18" y="27" text-anchor="middle" font-family="Arial Black,sans-serif" font-size="20" font-weight="900" fill="white">R</text>
+          <text x="44" y="26" font-family="Arial Black,sans-serif" font-size="13" font-weight="700" fill="#1A1A1A">deliveroo</text>
+        </svg>
+      </a>
+    </div>
+    <div class="delivery-actions">
+      <a href="tel:+3908621956991" class="btn btn--primary"><span data-it="Prenota un tavolo" data-en="Book a table">Prenota un tavolo</span></a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer__inner">
+    <div>
+      <div class="footer__brand-name">BBONA</div>
+      <div class="footer__brand-sub" data-it="L’Aquila · Pizzeria Romana" data-en="L’Aquila · Roman Pizzeria">L’Aquila · Pizzeria Romana</div>
+      <p class="footer__desc" data-it="Pizza a legna, arrosticini, fritti e cucina creativa nel cuore dell’Aquila." data-en="Roman-style pizza, arrosticini, fried specialties and creative cooking in the heart of L’Aquila.">Pizza a legna, arrosticini, fritti e cucina creativa nel cuore dell’Aquila.</p>
+    </div>
+    <div>
+      <div class="footer__col-title" data-it="Navigazione" data-en="Navigation">Navigazione</div>
+      <ul class="footer__links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="menu.html">Menu</a></li>
+        <li><a href="contatti.html" data-it="Contatti" data-en="Contact">Contatti</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer__col-title" data-it="Orari" data-en="Hours">Orari</div>
+      <div class="footer__desc">
+        <p data-it="Lunedi - Domenica" data-en="Monday - Sunday">Lunedi - Domenica</p>
+        <p style="color:var(--crema);margin-top:0.3rem;">19:30 - 23:30</p>
+        <p style="margin-top:0.8rem;">L’Aquila</p>
+      </div>
+    </div>
+  </div>
+  <div class="footer__bottom">
+    <span data-it="© 2026 BBONA Pizzeria Romana" data-en="© 2026 BBONA Pizzeria Romana">© 2026 BBONA Pizzeria Romana</span>
+    <div class="footer__social">
+      <a href="https://www.instagram.com/bbona_pizzeria_romana/" target="_blank" rel="noopener">Instagram</a>
+      <a href="https://www.facebook.com/p/BBONA-Pizzeria-romana-61583268901524/" target="_blank" rel="noopener">Facebook</a>
+    </div>
+  </div>
+  <p style="text-align:center; padding: 1rem 0 0.5rem; font-size:0.7rem; opacity:0.35;">
+    <a href="admin.html" style="color:inherit;" data-it="Area riservata" data-en="Private Area">Area riservata</a>
+  </p>
+</footer>
+
+<script type="module">
+import { BBONA_DEFAULT_MENU, englishFallback } from "./js/default-menu.js?v=20260720b";
+
+const filterBar  = document.getElementById('filter-bar');
+const menuGrid   = document.getElementById('menu-grid');
+const menuNote   = document.getElementById('menu-note');
+const menuLoading= document.getElementById('menu-loading');
+
+function esc(s){ const d=document.createElement('div'); d.textContent=s||''; return d.innerHTML; }
+
+const tagTranslations = {
+  Antipasti: 'Starters',
+  Stuzzicherie: 'Fried Bites',
+  'Special Fried': 'Special Fried',
+  'Pizze Fritte': 'Fried Pizzas',
+  'Patate Fritte': 'Fries',
+  Consigliata: 'Recommended',
+  Consigliato: 'Recommended',
+  Consigliati: 'Recommended',
+  Signature: 'Signature',
+  Stagionale: 'Seasonal',
+  Piccante: 'Spicy',
+  Vegano: 'Vegan',
+  Vegetariano: 'Vegetarian',
+  'Da condividere': 'To share',
+  Novita: 'New',
+  Novità: 'New'
+};
+
+function getTagEn(item) {
+  return item.tag_en || tagTranslations[item.tag] || item.tag;
+}
+
+function getTagIt(item) {
+  return item.tag === 'Novita' ? 'Novità' : item.tag;
+}
+
+function loadMenu() {
+  try {
+    const saved = JSON.parse(localStorage.getItem('bbona_menu') || 'null');
+    if (Array.isArray(saved) && saved.length) renderMenu(saved);
+  } catch (e) { console.warn('Menu locale non leggibile:', e); }
+}
+
+function renderMenu(menuData) {
+  menuLoading.style.display = 'none';
+  menuGrid.style.display    = 'block';
+  menuNote.style.display    = 'block';
+  filterBar.innerHTML = `
+    <button class="filter-btn active" data-filter="tutti" data-it="Tutti" data-en="All">Tutti</button>
+  `;
+  menuGrid.innerHTML = '';
+
+  // Filtri
+  menuData.forEach(cat => {
+    const btn = document.createElement('button');
+    btn.className    = 'filter-btn';
+    btn.dataset.filter = cat.id;
+    btn.dataset.it = cat.title;
+    btn.dataset.en = cat.title_en || cat.title;
+    btn.textContent  = cat.title;
+    filterBar.appendChild(btn);
+  });
+
+  // Categorie
+  menuData.forEach(cat => {
+    const catEl = document.createElement('div');
+    catEl.className    = 'menu-category';
+    catEl.dataset.cat  = cat.id;
+    const itemsHtml = (cat.items||[]).map(item => `
+      <div class="menu-item">
+        <div class="menu-item__head">
+          <span class="menu-item__name"
+            data-it="${esc(item.name)}"
+            data-en="${esc(!item.name_en || item.name_en === item.name ? englishFallback(item.name) : item.name_en)}">${esc(item.name)}</span>
+          <span class="menu-item__price">${esc(item.price)}</span>
+        </div>
+        <p class="menu-item__desc"
+          data-it="${esc(item.desc)}"
+          data-en="${esc(!item.desc_en || item.desc_en === item.desc ? englishFallback(item.desc) : item.desc_en)}">${esc(item.desc)}</p>
+        ${item.tag ? `<span class="menu-item__tag" data-it="${esc(getTagIt(item))}" data-en="${esc(getTagEn(item))}">${esc(getTagIt(item))}</span>` : ''}
+      </div>`).join('');
+    catEl.innerHTML = `<h2 class="menu-category__title" data-it="${esc(cat.title)}" data-en="${esc(cat.title_en||cat.title)}">${esc(cat.title)}</h2><div class="menu-items">${itemsHtml}</div>`;
+    menuGrid.appendChild(catEl);
+  });
+
+  if (window.bbonaSetMenuLang) {
+    window.bbonaSetMenuLang(localStorage.getItem('bbona_lang') || 'it');
+  }
+
+  // Logica filtri
+  const filterBtns  = document.querySelectorAll('.filter-btn');
+  const categories  = document.querySelectorAll('.menu-category');
+  const menuTop     = document.getElementById('menu-top');
+  filterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      filterBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const filter = btn.dataset.filter;
+      categories.forEach(cat => {
+        cat.style.display = (filter==='tutti' || cat.dataset.cat===filter) ? 'block' : 'none';
+      });
+      menuTop.scrollIntoView({ behavior:'smooth', block:'start' });
+      // Centra il bottone cliccato nella barra filtri (su mobile)
+      btn.scrollIntoView({ behavior:'smooth', block:'nearest', inline:'center' });
+    });
+  });
+}
+
+function showFallback() {
+  const lang = localStorage.getItem('bbona_lang') || 'it';
+  menuLoading.textContent = lang === 'en'
+    ? 'Menu temporarily unavailable. Please try again shortly.'
+    : 'Menu temporaneamente non disponibile. Riprova tra poco.';
+}
+
+// Supcentro multilingua sul menu dinamico
+window.bbonaSetMenuLang = function(lang) {
+  document.querySelectorAll('.menu-item__name[data-en]').forEach(el => {
+    el.textContent = lang === 'en' ? (el.dataset.en || el.dataset.it) : el.dataset.it;
+  });
+  document.querySelectorAll('.menu-item__desc[data-en]').forEach(el => {
+    el.textContent = lang === 'en' ? (el.dataset.en || el.dataset.it) : el.dataset.it;
+  });
+  document.querySelectorAll('.menu-category__title[data-en]').forEach(el => {
+    el.textContent = lang === 'en' ? (el.dataset.en || el.dataset.it) : el.dataset.it;
+  });
+  document.querySelectorAll('.filter-btn[data-en]').forEach(el => {
+    el.textContent = lang === 'en' ? (el.dataset.en || el.dataset.it) : el.dataset.it;
+  });
+  document.querySelectorAll('.menu-item__tag[data-en]').forEach(el => {
+    el.textContent = lang === 'en' ? (el.dataset.en || el.dataset.it) : el.dataset.it;
+  });
+};
+
+renderMenu(BBONA_DEFAULT_MENU);
+loadMenu();
+window.bbonaSetMenuLang(localStorage.getItem('bbona_lang') || 'it');
+</script>
+<script src="js/icons.js"></script>
+<script src="js/main.js"></script>
+<script src="js/cookie-banner.js?v=20260708-analytics"></script>
+<script type="module">
+  import { initLangToggle } from './js/lang.js';
+  initLangToggle((lang) => {
+    if (window.bbonaSetMenuLang) window.bbonaSetMenuLang(lang);
+  });
+</script>
+</body>
+</html>
