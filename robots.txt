@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /admin.html
+
+Sitemap: https://bbona-pizzeria-romana.vercel.app/sitemap.xml
