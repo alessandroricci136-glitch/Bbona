@@ -2801,6 +2801,7 @@ body:not(.admin-page) .navbar__logo-img {
   }
   .home-page .bbona-hero-claim__front {
     height: clamp(6.7rem, 30vw, 8rem);
+    clip-path: inset(-2.5rem -2.5rem 0 -2.5rem);
   }
   .home-page .hero__actions {
     position: relative;
@@ -2853,5 +2854,26 @@ body:not(.admin-page) .navbar__logo-img {
   .navbar__links.open a {
     min-height: 3.8rem;
     font-size: 1.9rem;
+  }
+}
+
+/* Proporzioni finali della hero home su mobile */
+@media (max-width: 800px) {
+  .home-page .hero--photo {
+    background-position: 76% center !important;
+  }
+  .home-page .bbona-hero-claim span.bbona-hero-claim__back,
+  .home-page .bbona-hero-claim span.bbona-hero-claim__mid {
+    font-size: clamp(3.1rem, 14.5vw, 4rem);
+  }
+  .home-page .bbona-hero-claim span.bbona-hero-claim__back {
+    letter-spacing: .04em;
+  }
+  .home-page .bbona-hero-claim span.bbona-hero-claim__mid {
+    letter-spacing: .035em;
+  }
+  .home-page .bbona-hero-claim__front {
+    width: 92%;
+    height: clamp(6.25rem, 28vw, 7.5rem);
   }
 }
